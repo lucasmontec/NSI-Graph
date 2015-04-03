@@ -1,0 +1,107 @@
+/*
+*
+*	Pseudo-código:
+*		http://pt.wikipedia.org/wiki/Busca_em_profundidade
+* 
+*
+*	Descrição:
+*		Método de busca não-informada que expande e examina sistematicamente todos os vértices de um grafo
+*
+*	Parte inicial: Importações*
+*
+*
+*
+*	Início do script: Variáveis
+*		*Externas
+*			control - Essa variável é passada para esse script pelo executor do script.
+*			vertices - Vértices do grafo
+*			visitedMap - lista booleana de vértices já visitados
+*		*Declaração
+*
+*
+*		*Inicialização
+*
+*
+*	Algorítimo:
+*
+*/
+
+import nsigraph.GEdge;
+import nsigraph.GEdgeView;
+import nsigraph.GVertex;
+import nsigraph.GVertexView;
+import nsigraph.GraphControl;
+import java.util.Stack;
+
+ArrayList<GVertexView> vertices = control.view.getVertices();
+boolean[] visitedMap = new boolean[vertices.size()];
+
+found = false;
+
+for(int i=0;i<vertices.size();i++){
+	visitedMap[i] = false;
+}
+
+isVisited(GVertexView v){
+	return visitedMap[vertices.indexOf(v)];
+}
+
+visit(GVertexView v){
+	if(!found){
+		v.script_select(true);
+	}
+	visitedMap[vertices.indexOf(v)] = true;
+}
+
+getUnvisited(GVertexView v){
+	ArrayList<GVertexView> vertices = control.getView().getVerticesConnectedTo(v);
+	for(GVertexView vv : vertices){
+		if(!isVisited(vv)){
+			visit(vv);
+			return vv;
+		}
+	}
+	return null;
+}
+
+if(target == null){
+	console.err("No target node selected!");
+	console.err("DFS help> To select the target press the right mouse button on a vertex.");
+}else if(root == null){
+	console.err("No root node selected!");
+	console.err("DFS help> To select the target press the left mouse button on a vertex.");
+}else if(root == target){
+	console.err("Root is target!");
+}else{
+	//Create a visiting stack
+	Stack pilha = new Stack();
+	//Add and visit the root node
+	pilha.push(root);
+	visit(root);
+	console.info("DFS> Visited: "+root.getID()+" - "+root.getTitle());
+	//Visit a node
+	while(!pilha.empty()) 
+	{
+		GVertexView v = (GVertexView)pilha.peek();
+		GVertexView ch = null;
+		//Get an avaliable child node (each child node)
+		if ((ch=getUnvisited(v))!=null)
+		{
+			if(ch.equals(target)){
+				console.info("DFS> Found target! ["+ch.getID()+" - "+ch.getTitle()+"]");
+				found = true;
+			}
+			//Visit the child node
+			visit(ch);
+			console.info("DFS> Visited: "+ch.getID()+" - "+ch.getTitle());
+			//Add the node to visting is childs
+			pilha.push(ch);
+		}
+		else
+		{
+			pilha.pop();
+		}
+			
+
+	}
+}

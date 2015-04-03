@@ -1,0 +1,39 @@
+/*
+*	NSI GRAPH EDITOR - SAMPLE SCRIPT
+*
+*	Descrição:
+*		Algorítimo para remover vértices inalcançáveis.
+*
+*	Parte inicial: Importações
+*
+*	Início do script: Variáveis
+*		*Externas
+*			control - Essa variável é passada para esse script pelo executor do script.
+*
+*		*Declaração
+*			vertices - lista com todos os vértices.
+*
+*		*Inicialização
+*			vertices = control.graph.getVertices(); - coleta da lista de vértices do objeto controlador
+*
+*	Algorítimo:
+*		Corre pela lista de vértices analizando seus graus.
+*/
+
+import nsigraph.GEdge;
+import nsigraph.GVertex;
+import nsigraph.GraphControl;
+import java.util.Collections;
+
+// Primeiro pegaremos todos os vértices
+ArrayList<GVertex> vertices = control.graph.getVertices();
+
+//Agora para cada aresta tentaremos coloca-la no set final
+for(GVertex v : vertices){
+	//Checa o grau
+	if(control.graph.getDegree(v) == 1){
+		GraphControl.getView(v,control.view).script_select(true);
+	}
+}
+
+

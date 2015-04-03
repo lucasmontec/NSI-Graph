@@ -1,0 +1,34 @@
+/*
+*	NSI GRAPH EDITOR - SAMPLE SCRIPT
+*
+*	Descrição:
+*		Algorítimo para selecionar todos os vértices. Mostra o poder do editor XD.
+*
+*	Parte inicial: Importações
+*		nsigraph.GEdgeView - É a classe de visualização de um edge.
+*		nsigraph.GraphControl - É o controlador do grafo. Esse tem metodos para alterar ambos o modelo e a visualização.
+*
+*	Início do script: Variáveis
+*		*Externas
+*			control - Essa variável é passada para esse script pelo executor do script.
+*
+*		*Declaração
+*			ArrayList<GEdgeView> edgesv - Declaração da lista que guarda as visualizações das arestas.
+*
+*		*Inicialização
+*			control.view.getEdges() - Metodo de pegar a lista de arestas pelo controle, pega do view.
+*
+*	Algorítimo:
+*		for(GEdgeView ev : edgesv) - Corre por todos os vérices da lista usando o Iterator interno.
+*		ev.script_select(true); - Seta a seleção de script do vérice para TRUE.
+*
+*/
+
+import nsigraph.GEdgeView;
+import nsigraph.GraphControl;
+
+ArrayList<GEdgeView> edgesv = control.view.getEdges();
+
+for(GEdgeView ev : edgesv){
+	ev.script_select(true);
+}

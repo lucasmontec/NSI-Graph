@@ -1,0 +1,43 @@
+/*
+*	NSI GRAPH EDITOR - SAMPLE SCRIPT
+*
+*	Descrição:
+*		Algorítimo para remover todos os vértices do grafo.
+*
+*	Parte inicial: Importações
+*		nsigraph.Graph - É a classe que representa o modelo de um grafo. Não contém instruções de draw mas contém a parte lógica do grafo.
+*		nsigraph.GEdgeView - É a classe de visualização de um edge.
+*		nsigraph.GEdge - É a classe modelo de um edge.
+*		nsigraph.GraphControl - É o controlador do grafo. Esse tem metodos para alterar ambos o modelo e a visualização.
+*
+*	Início do script: Variáveis
+*		*Externas
+*			control - Essa variável é passada para esse script pelo executor do script.
+*
+*		*Declaração
+*			ArrayList<GEdgeView> edgesv - Declaração da lista que guarda as visualizações das arestas.
+*			ArrayList<GEdge> edges - Declaração da lista que guarda os modelos das arestas.
+*
+*		*Inicialização
+*			control.graph.getEdges() - Metodo de pegar a lista de arestas pelo controle, pega do graph.
+*			control.view.getEdges() - Metodo de pegar a lista de arestas pelo controle, pega do view.
+*
+*	Algorítimo:
+*		if(edges != null && edgesv != null) - Checa se conseguimos puxar as listas.
+*		edgesv.clear(); - Limpamos a lista de views.
+*		edges.clear(); - Limpamos a lista de models.
+*
+*/
+
+import nsigraph.Graph;
+import nsigraph.GEdgeView;
+import nsigraph.GEdge;
+import nsigraph.GraphControl;
+
+ArrayList<GEdgeView> edgesv = control.view.getEdges();
+ArrayList<GEdge> edges = control.graph.getEdges();
+
+if(edges != null && edgesv != null){
+	edgesv.clear();
+	edges.clear();
+}

@@ -1,0 +1,32 @@
+DONE -
+[x]Arrumar a deleção de arestas
+[x]Resolver scriptSelect para gml
+[x]Arrumar o script run que remove vértices
+[x]Adicionar 'console' para os scripts
+[x]Melhorar render do texto (centralizar e desenhar uma caixa atraz)
+[x]Maneira para escolher uma root
+[x]Maneira de escolher um target
+[x]Passar para um worker o script interpreter
+
+TODO -
+[ ]Melhorar o render dos custos das arestas
+[ ]Limpar o codigo gerando unificações e superclasses
+[ ]Separar o código em pacotes e módulos
+
+TODO FUTURE -
+[ ]Opengl
+[ ]Finder - Como o organizer só que procura pelo nome(ñ com o mouse) e tem niveis de busca
+[ ]Melhorar loading screen
+[ ]Raizes e ending points
+[ ]Esquema de JDesktop com windows
+[ ]Melhorar sistema de Toolset
+[ ]Permitir grafos terem mais views em paineis separados(Windows)
+[ ]Tool para isolar uma parte do grafo um um painel extra p trabalhar com ela separadamente
+[ ]Zoom no graph panel
+[ ]Implementar mudança de view gerada sem load
+[ ]Organizer puxa vertices proximos
+[ ]Niveis do organizer
+[ ]View do grau, graus mais altos nos circulos mais internos
+[ ]Adicionar grau dos vértices no objeto deles guardando quando é calculado
+[ ]Adicionar painter
+[ ]Ctrl-z

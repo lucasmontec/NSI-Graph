@@ -1,0 +1,121 @@
+/*
+* FIX THIS! There is a bug
+*/
+
+import nsigraph.GEdgeView;
+import nsigraph.GVertexView;
+import nsigraph.GraphControl;
+
+// Primeiro pegaremos todas as arestas e vértices
+ArrayList<GVertexView> vertices = control.view.getVertices();
+ArrayList<GVertexView> visited_vertices = new ArrayList<GVertexView>();
+
+//Discovery set
+int size = vertices.size();
+float[] vertexVal = new float[size];
+boolean[] visited = new boolean[size];
+
+for(int i=0;i<size;i++){
+	vertexVal[i] = -1f; //infinite
+	visited[i] = false; //none visited
+}
+
+updateVertex(GVertexView v, float currcost, float edgecost){
+	if(vertexVal[vertices.indexOf(v)] > (currcost+edgecost) || vertexVal[vertices.indexOf(v)] < 0){
+		vertexVal[vertices.indexOf(v)] = (currcost+edgecost);
+	}
+}
+
+updateNeighbors(GVertexView v){
+	console.info("Djikstra> Neighbor update begin");
+	ArrayList<GEdgeView> temp = control.view.getEdgesConnectedTo(v);
+	GVertexView buff = null;
+	float ecost = 0f;
+	console.info("Djikstra> Neighbor update work: "+temp.size());
+	for(GEdgeView e : temp){
+		//Select the correct one to update
+		if(e.getOrigin().equals(v)){
+			buff = e.getTarget();
+		}else{
+			buff = e.getOrigin();
+		}
+		//Update it
+		if(e.getEdge().hasCost()){
+			ecost = e.getEdge().getCost();
+		}
+		console.info("Djikstra> Updating: "+buff.getID());
+		updateVertex(buff, vertexVal[vertices.indexOf(v)], ecost);
+	}
+	console.info("Djikstra> Neighbor update end");
+}
+
+visit(GVertexView v){
+	visited[vertices.indexOf(v)] = true;
+	updateNeighbors(v);
+	visited_vertices.add(v);
+}
+
+getCheapestNonVisited(GVertexView v){
+	ArrayList<GVertexView> temp = control.view.getVerticesConnectedTo(v);
+	if(temp.size() > 0){
+		//Clear already visited
+		for(int i=0;i<temp.size();i++){
+			
+			if(visited[vertices.indexOf(temp.get(i))]){
+				temp.remove(i);
+			}
+		}
+		
+		//If we still have something to get...
+		if(temp.size() > 0){
+			//Get valid cheaps
+			GVertexView cheap = temp.get(0);
+			float cheapestVal = vertexVal[vertices.indexOf(cheap)];
+			for(GVertexView iv : temp){
+				if(!visited[vertices.indexOf(iv)]){
+					if(vertexVal[vertices.indexOf(iv)] < cheapestVal && vertexVal[vertices.indexOf(iv)] > 0){
+						cheapestVal = vertexVal[vertices.indexOf(iv)];
+						cheap = iv;
+					}
+				}
+			}
+
+			return cheap;
+		}else{
+			return null;
+		}
+	}else{
+		console.info("Djikstra> Couldn't calculate cheapest neighbor! ["+v.getID()+"] size: "+temp.size());
+	}
+	return null;
+}
+
+//Curr vertex for movement
+if(root == null){
+	console.err("No root node selected!");
+	console.err("Dijkstra help> To select the target press the left mouse button on a vertex.");
+}else{
+	GVertexView currVertex = root;
+	console.info("Djikstra> Current vertex is now the root: "+currVertex.getID());
+	vertexVal[vertices.indexOf(currVertex)] = 0;
+	console.info("Djikstra> Set root weight to 0 at index: "+vertices.indexOf(currVertex));
+	visit(currVertex);
+
+	//Dijkstra start
+	console.info("Djikstra> start.");
+
+	//Execute
+	while((currVertex=getCheapestNonVisited(currVertex)) != null){
+		console.info("Djikstra> Going to: "+currVertex.getID()+" named: "+currVertex.getTitle());
+		visit(currVertex);
+	}
+
+	//Dijkstra end
+	console.info("Djikstra> end.");
+	
+	//Show the sortest path
+	console.info("Djikstra> Resulting path:");
+	for(GVertexView vv : visited_vertices){
+		console.info("->"+vv.getVertex().getID()+" called "+vv.getVertex().getVertexTitle());
+	}
+}

@@ -1,0 +1,182 @@
+/*
+*	NSI GRAPH EDITOR - SAMPLE SCRIPT
+*
+*	Psedo-código:
+*		http://en.wikipedia.org/wiki/Kruskal\'s_algorithm
+* 		KRUSKAL(G):
+*	 	A = Ø
+*	 	foreach v ? G.V:
+*		   	MAKE-SET(v)
+* 		foreach (u, v) ordered by weight(u, v), increasing:
+*	    	if FIND-SET(u) ? FIND-SET(v):
+*	      		 A = A ? {(u, v)}
+*	      		 UNION(u, v)
+*	 	return A
+*
+*
+*	Descrição:
+*		Algorítimo para encontrar a Spanning tree do grafo.
+*
+*	Parte inicial: Importações
+*
+*
+*
+*
+*	Início do script: Variáveis
+*		*Externas
+*			control - Essa variável é passada para esse script pelo executor do script.
+*
+*		*Declaração
+*
+*
+*		*Inicialização
+*
+*
+*	Algorítimo:
+*		Um homem cansado cometeu o pecado e fez Extreme go horse aqui em baixo
+*/
+
+import nsigraph.GEdgeComparator;
+import nsigraph.GEdge;
+import nsigraph.GEdgeView;
+import nsigraph.GVertex;
+import nsigraph.GraphControl;
+import java.util.Collections;
+import java.util.HashMap;
+
+// Primeiro pegaremos todas as arestas e vértices
+ArrayList<GEdge> edges = control.graph.getEdges();
+ArrayList<GVertex> vertices = control.graph.getVertices();
+
+//Lista para guardar-las
+ArrayList<GEdge> spanningTree = new ArrayList<GEdge>();
+
+//Discovery set
+String[] sets = new String[vertices.size()];
+
+makeSet(GVertex v){
+	sets[vertices.indexOf(v)] = v.getID();
+}
+
+findSet(GVertex v){
+	if(v == null){
+		return "noset";
+	}
+	if(!vertices.contains(v)){
+		return "noset";
+	}
+	//Pega o ID do conjunto
+	return sets[vertices.indexOf(v)];
+}
+
+union(GVertex v, GVertex k){
+	//Muda todos os vértices que estão marcados como conjunto V para conjunto K
+	int idToChange = vertices.indexOf(v);
+	
+	//Conjunto de origem
+	String setFrom = findSet(v);
+	
+	//Conjunto de destino
+	String setToGo = findSet(k);
+	
+	//Para todos os vértices com o conjunto V, mudamos o mapeamento para que possuam K
+	for(int i=0;i<vertices.size();i++){
+		if( findSet(vertices.get(i)).equals(setFrom) ){
+			sets[i] = setToGo;
+		}
+	}
+}
+
+//Zera a array
+for(int i = 0; i<vertices.size(); i++){
+	//Cada vértice terá como conjunto inicial seu próprio ID
+	makeSet(vertices.get(i));
+}
+
+//Agora vamos organizar a lista de vértices por custo usando um comparador de Arestas (Edges)
+Collections.sort(edges, new GEdgeComparator());
+
+//Agora para cada aresta tentaremos coloca-la no set final
+for(int i=0; i<edges.size(); i++){
+	//Declaramos a aresta atual como nosso elemento de iteração
+	GEdge currEdge = edges.get(i);
+	
+	//Enviamos informação ao console conforme fazemos
+	console.info("Current edge: ["+currEdge.getOrigin().getID()+","+currEdge.getTarget().getID()+"] cost: "+currEdge.getCost());
+	
+	/*
+	* Na primeira etapa da visualização dizemos que o objeto está sendo 'olhado'
+	*/
+	
+	//Coletamos a view do iterador atual
+	GEdgeView ev = GraphControl.getView(currEdge,control.view);
+	//Estamos vendo o vértice (cor 'lookingAt')
+	ev.setScriptColor(helper.lookingAtColor);
+	//Selecionamos ela para ser pintada de maneira diferente
+	ev.script_select(true);
+	//repintamos o painel com o grafo
+	panel.repaint();
+	//Esperamos aqui para que o usuário veja o que está acontecendo
+	helper.stepPoint();
+	//Notifica que o step precisa ser pressionado
+	console.info("[press the step button]");
+	
+	//Agora veremos de a aresta em questão é valida passa a nossa Minimum spanning tree (MST)
+	if(!findSet(currEdge.getOrigin()).equals(findSet(currEdge.getTarget()))){
+		console.info("Origin set: "+findSet(currEdge.getOrigin())+" det "+findSet(currEdge.getTarget()));
+		//Se é válida, adicionamos ela à árvore
+		spanningTree.add(currEdge);
+		//E escrevemos essa ação no console
+		console.info("Adding...");
+		//Por fim fazemos a união dos conjuntos
+		union(currEdge.getOrigin(), currEdge.getTarget());
+		
+		/*
+		* Aqui entra código de visualização do algorítimo
+		*/
+		
+		//Reseta a cor
+		ev.resetScriptColor();
+		//E, por fim, repintamos o painel com o grafo
+		panel.repaint();
+		//Notifica que o step precisa ser pressionado
+		console.info("[press the step button]");
+		//Agora esperamos para a próxima iteração
+		helper.stepPoint();
+		
+	}else{
+		//Esse trecho de código ocorre quando a aresta é considerada não segura
+		//Vamos fazer uma visualização nessa também:
+		
+		//Notificamos que o vértice é nao seguro
+		console.info("Unsafe:["+currEdge.getOrigin().getID()+","+currEdge.getTarget().getID()+"] cost: "+currEdge.getCost());
+		
+		//Vamos alterar a cor do script para uma cor de negação
+		ev.setScriptColor(helper.negateColor);
+		//Seleciona 
+		ev.script_select(true);
+		//Repintamos o painel
+		panel.repaint();
+		//Notifica que o step precisa ser pressionado
+		console.info("[press the step button]");
+		//Para e espera o próximo step
+		helper.stepPoint();
+		
+		//Deselecionamos o vértice
+		ev.script_select(false);
+		//Repintamos o painel
+		panel.repaint();
+		//Um delayzinho para visualizar e passo
+		helper.delay(80);
+		//Resetamos a cor
+		ev.resetScriptColor();
+	}
+	
+}
+
+
+
+
+
+
+

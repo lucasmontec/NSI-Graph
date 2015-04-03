@@ -1,0 +1,24 @@
+GML Parser upgrade
+
+Resposta do parser atual
+<GML read start>
+Author: MarkNewmanonSatJul2205:32:162006
+<GML read end>
+<GML parse time: 36841 ms>
+<GML updated all vertice degrees>
+
+tempo de leitura do parser:
+36841 ms
+
+mudança a ser realizada:
+gerar o objeto Graph apenas após a leitura total do arquivo na memória.
+
+Novo tempo:
+<GML total IO time: 36870 ms>
+
+resultado:
+Levou mais tempo do que a redução desejada. O problema está na maneira como as linhas são interpretadas
+e não na leitura do arquivo.
+
+<Reading the GML file into string...>
+<Done in 38ms>

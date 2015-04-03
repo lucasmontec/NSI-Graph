@@ -1,0 +1,24 @@
+import nsigraph.GEdge;
+import nsigraph.GVertex;
+import nsigraph.GraphControl;
+import java.util.Collections;
+
+// Primeiro pegaremos todos os vértices
+ArrayList<GVertexView> vertices = control.view.getVertices();
+ArrayList<GVertexView> rvertices = new ArrayList<GVertexView>();
+
+//Agora para cada aresta tentaremos coloca-la no set final
+for(GVertexView v : vertices){
+	//Checa o grau
+	if(!v.isScriptSelected()){
+		rvertices.add(v);
+	}
+}
+
+//Remove
+console.info("Selected vertices: "+rvertices.size()+" from: "+vertices.size()+" vertices.");
+if(rvertices.size() > 0){
+	for(GVertexView v : rvertices){
+		control.removeVertex(v);
+	}
+}

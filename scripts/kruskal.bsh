@@ -1,0 +1,131 @@
+/*
+*	NSI GRAPH EDITOR - SAMPLE SCRIPT
+*
+*	Psedo-código:
+*		http://en.wikipedia.org/wiki/Kruskal\'s_algorithm
+* 		KRUSKAL(G):
+*	 	A = Ø
+*	 	foreach v ? G.V:
+*		   	MAKE-SET(v)
+* 		foreach (u, v) ordered by weight(u, v), increasing:
+*	    	if FIND-SET(u) ? FIND-SET(v):
+*	      		 A = A ? {(u, v)}
+*	      		 UNION(u, v)
+*	 	return A
+*
+*
+*	Descrição:
+*		Algorítimo para encontrar a Spanning tree do grafo.
+*
+*	Parte inicial: Importações
+*
+*
+*
+*
+*	Início do script: Variáveis
+*		*Externas
+*			control - Essa variável é passada para esse script pelo executor do script.
+*
+*		*Declaração
+*
+*
+*		*Inicialização
+*
+*
+*	Algorítimo:
+*
+*/
+
+import nsigraph.GEdgeComparator;
+import nsigraph.GEdge;
+import nsigraph.GEdgeView;
+import nsigraph.GVertex;
+import nsigraph.GraphControl;
+import java.util.Collections;
+
+// Primeiro pegaremos todas as arestas e vértices
+ArrayList<GEdge> edges = control.graph.getEdges();
+ArrayList<GEdge> redges = new ArrayList<GEdge>();
+ArrayList<GVertex> vertices = control.graph.getVertices();
+
+//Lista para guardar-las
+ArrayList<GEdge> spanningTree = new ArrayList<GEdge>();
+
+//Discovery set
+String[] sets = new String[vertices.size()];
+
+makeSet(GVertex v){
+	sets[vertices.indexOf(v)] = v.getID();
+}
+
+findSet(GVertex v){
+	if(v == null){
+		return "noset";
+	}
+	if(!vertices.contains(v)){
+		return "noset";
+	}
+	//Get the set ID
+	return sets[vertices.indexOf(v)];
+}
+
+union(GVertex v, GVertex k){
+	//Set all vertices with the set v to set k
+	int idToChange = vertices.indexOf(v);
+	
+	//Set from
+	String setFrom = findSet(v);
+	
+	//Set to go
+	String setToGo = findSet(k);
+	
+	for(int i=0;i<vertices.size();i++){
+		if( findSet(vertices.get(i)).equals(setFrom) ){
+			sets[i] = setToGo;
+		}
+	}
+}
+
+//Zero the array
+for(int i = 0; i<vertices.size(); i++){
+	//Make all sets
+	makeSet(vertices.get(i));
+}
+
+//Agora organizaremos elas por custo
+Collections.sort(edges, new GEdgeComparator());
+
+//Agora para cada aresta tentaremos coloca-la no set final
+for(int i=0; i<edges.size(); i++){
+	//Declare a edge as a iterator
+	GEdge currEdge = edges.get(i);
+	
+	//Debug
+	console.info("Current edge: ["+currEdge.getOrigin().getID()+","+currEdge.getTarget().getID()+"] cost: "+currEdge.getCost());
+	
+	//Check for valid MST edge
+	if(!findSet(currEdge.getOrigin()).equals(findSet(currEdge.getTarget()))){
+		//System.out.println("Origin set: "+findSet(currEdge.getOrigin())+" det "+findSet(currEdge.getTarget()));
+		//Add to the MST
+		spanningTree.add(currEdge);
+		//Adding edge debug
+		//System.out.println("Adding...");
+		//Union the sets
+		union(currEdge.getOrigin(), currEdge.getTarget());
+	}else{
+		//Unsafe edge debug
+		console.info("Unsafe:["+currEdge.getOrigin().getID()+","+currEdge.getTarget().getID()+"] cost: "+currEdge.getCost());
+		redges.add(currEdge);
+	}
+	
+	//Não adiciona a aresta
+	console.info("Done["+(i*1f/edges.size()*1f)*100+"%]");
+}
+
+//Remove
+console.info("Unsafe edges: "+redges.size()+" from: "+edges.size()+" edges.");
+if(redges.size() > 0){
+	for(GEdge e : redges){
+		GraphControl.removeEdge(e, control.graph, control.view);
+	}
+}

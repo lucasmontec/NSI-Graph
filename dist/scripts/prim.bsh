@@ -1,0 +1,76 @@
+import nsigraph.GEdgeViewComparator;
+import nsigraph.GVertexView;
+import nsigraph.GEdgeView;
+import nsigraph.GraphControl;
+import java.util.Collections;
+
+ArrayList<GVertexView> subgraphVertices = new ArrayList<GVertexView>();
+ArrayList<GEdgeView> subgraphEdges = new ArrayList<GEdgeView>();
+ArrayList<GEdgeView> edges = new ArrayList<GEdgeView>();
+ArrayList<GEdgeView> redges = new ArrayList<GEdgeView>();
+GEdgeView cheapEdge = null;
+GVertexView temp = null;
+GEdgeViewComparator comp = new GEdgeViewComparator();	
+
+console.info("Prim> start.");
+if(root == null){
+	console.err("No root node selected!");
+	console.err("Prim help> To select the target press the left mouse button on a vertex.");
+}else{
+	subgraphVertices.add(root);
+	edges.addAll(control.view.getEdgesConnectedTo(root));
+	console.info("Prim> Root: "+root.getID());
+	console.info("Prim> Added root edges to possible list: "+edges.size());
+	
+	if(edges.size() <= 0){
+		console.err("Prim> Something went wrong on root detection!");
+		console.err("Prim> Try re-selecting the root!");
+		console.err("Prim help> To select the target press the left mouse button on a vertex.");
+	}else{
+		while(subgraphVertices.size() < control.view.getVertices().size()){
+			console.info("Prim> sorting "+edges.size()+" edges.");
+			Collections.sort(edges, comp);
+			cheapEdge = edges.get(0);
+			subgraphEdges.add(cheapEdge);
+			console.info("Prim> cheap edge selected: "+cheapEdge.getOrigin().getID()+":"+cheapEdge.getTarget().getID());
+			
+			if(subgraphVertices.contains(cheapEdge.getOrigin())){
+				temp = cheapEdge.getTarget();
+			}else{
+				temp = cheapEdge.getOrigin();
+			}
+			
+			console.info("Prim> Added vertex: "+temp.getID()+" to subgraph.");
+			subgraphVertices.add(temp);
+			for(GEdgeView ev : control.view.getEdgesConnectedTo(temp)){
+				if(!edges.contains(ev)){
+					edges.add(ev);
+				}
+			}
+			console.info("Prim> Added root edges to possible list: "+control.view.getEdgesConnectedTo(temp).size());
+			
+			//Check if we can remove edges that travel to known locations
+			for(GEdgeView ev : edges){
+				if(subgraphVertices.contains(ev.getOrigin()) && subgraphVertices.contains(ev.getTarget())){
+					redges.add(ev);
+				}
+			}
+			
+			//If we found cyclic edges then we remove them
+			if(redges.size()>0){
+				for(GEdgeView ev : redges){
+					edges.remove(ev);
+				}
+			}
+		}
+
+		//Now we remove
+		edges.addAll(control.view.getEdges());
+		for(GEdgeView ev : subgraphEdges){
+			edges.remove(ev);
+		}
+		for(GEdgeView ev : edges){
+			GraphControl.removeEdge(ev, control.graph, control.view);
+		}
+	}
+}

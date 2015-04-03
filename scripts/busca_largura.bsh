@@ -1,0 +1,57 @@
+
+
+import nsigraph.GVertexView;
+import nsigraph.GVertex;
+import nsigraph.GraphControl;
+import java.util.Queue;
+
+ArrayList<GVertexView> vertices = control.view.getVertices();
+boolean[] visitedMap = new boolean[vertices.size()];
+
+for(int i=0;i<vertices.size();i++){
+	visitedMap[i] = false;
+}
+
+isVisited(GVertexView v){
+	return visitedMap[vertices.indexOf(v)];
+}
+
+visit(GVertexView v){
+	visitedMap[vertices.indexOf(v)] = true;
+}
+
+getUnvisited(GVertexView v){
+	ArrayList<GVertexView> vertices = control.getView().getVerticesConnectedTo(v);
+	for(GVertexView vv : vertices){
+		if(!isVisited(vv)){
+			visit(vv);
+			return vv;
+		}
+	}
+	return null;
+}
+
+if(root == null){
+	console.err("No root node selected!");
+	console.err("BFS help> To select the target press the left mouse button on a vertex.");
+}else{
+	//Create a visiting queue
+	Queue queue = new LinkedList();
+	//Add and visit the root node
+	queue.add(root);
+	visit(root);
+	console.info("BFS> Visited: "+root.getID()+" - "+root.getTitle());
+	//Visit each node
+	while(!queue.isEmpty()) {
+		GVertexView v = (GVertexView)queue.remove();
+		GVertexView ch = null;
+		//Get an avaliable child node (each child node)
+		while((ch=getUnvisited(v))!=null) {
+			//Visit the child node
+			visit(ch);
+			console.info("BFS> Visited: "+ch.getID()+" - "+ch.getTitle());
+			//Add the node to visting is childs
+			queue.add(ch);
+		}
+	}
+}
